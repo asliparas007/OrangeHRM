@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.service import Service
 
 from PageObjects.loginPage import loginPage
 
-
+driver = None  # Global WebDriver instance
 #New Content
 def pytest_addoption(parser):
     print("pytest_addoption is running!")  # Debugging
@@ -82,5 +82,50 @@ def valid_user_session(initialize_browser):
 
     return driver
 
+#---------------------------------------- Report-----------------
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item):
+    """
+    Capture screenshot on test failure and embed in HTML report.
+    """
+    pytest_html = item.config.pluginmanager.getplugin('html')
+    outcome = yield
+    report = outcome.get_result()
+    extra = getattr(report, 'extra', [])
+
+    if report.when in ("call", "setup"):
+        xfail = hasattr(report, 'wasxfail')
+        if (report.skipped and xfail) or (report.failed and not xfail):
+            reports_dir = os.path.join(os.path.dirname(__file__), 'Reports')
+            os.makedirs(reports_dir, exist_ok=True)
+
+            safe_test_name = report.nodeid.replace("::", "_").replace("/", "_").replace("\\", "_")
+            file_name = os.path.join(reports_dir, safe_test_name + ".png")
+
+            print("Test failed! Capturing screenshot:", file_name)
+
+            # Get the driver from the test's fixture
+            driver = item.funcargs.get("initialize_browser")
+
+            if driver is not None:  # Ensure driver is initialized
+                _capture_screenshot(driver, file_name)  # Pass driver
+
+                # Convert path for pytest-html
+                rel_file_name = os.path.relpath(file_name, os.path.dirname(__file__))
+                rel_file_name = rel_file_name.replace("\\", "/")  # Ensure correct format
+
+                if os.path.exists(file_name):
+                    html = f'<div><img src="{rel_file_name}" alt="screenshot" style="width:304px;height:228px;" ' \
+                           'onclick="window.open(this.src)" align="right"/></div>'
+                    extra.append(pytest_html.extras.html(html))
+
+        report.extra = extra
+
+# `_capture_screenshot()` to accept `driver`
+def _capture_screenshot(driver, file_name):
+    if driver is not None:
+        driver.get_screenshot_as_file(file_name)
+    else:
+        print("Error: WebDriver is not initialized!")
 
 
