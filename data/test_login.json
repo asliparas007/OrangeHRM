@@ -1,0 +1,14 @@
+{
+  "data": [
+    {
+      "username": "Admin",
+      "password" : "admin123",
+      "expected": "dashboard"
+    },
+    {
+      "username": "Admin1",
+      "password" : "admin1234",
+      "expected": "login"
+    }
+  ]
+}
