@@ -41,6 +41,6 @@ class AddRecruitment():
         toast_message = WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '//p[contains(@class,"oxd-toast-content-text")]')))
         assert "Success" in toast_message.text
-        time.sleep(6)
+        
 
 
