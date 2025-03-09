@@ -14,7 +14,7 @@ class AddRecruitment():
         self.get_lastname = (By.NAME, "lastName")
         self.get_vacancy_section = (By.XPATH, "//div[@class='oxd-select-wrapper']")
         self.get_wait_element = (By.XPATH, "//div[contains(@class, 'oxd-select-dropdown')]")
-        self.select_vacancy = (By.XPATH,"//div[@role='option'][6]")
+        self.select_vacancy = (By.XPATH,"//div[@role='option'][5]")
         self.get_email = (By.XPATH, "//input[@placeholder='Type here']")
         self.get_submit_button = (By.XPATH,"//button[@type='submit']")
 
@@ -41,5 +41,6 @@ class AddRecruitment():
         toast_message = WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '//p[contains(@class,"oxd-toast-content-text")]')))
         assert "Success" in toast_message.text
+        time.sleep(6)
 
 

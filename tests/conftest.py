@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 import pytest
 from seleniumwire import webdriver
@@ -59,7 +60,7 @@ def valid_user_session(initialize_browser):
     initial_requests = len(driver.requests)
 
     userlogin.get_userlogin(valid_user["username"], valid_user["password"])
-
+    time.sleep(3)
     # Ensure login was successful
     if "/dashboard" not in driver.current_url:
         pytest.skip("Skipping test: Login failed")
