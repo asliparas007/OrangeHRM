@@ -87,7 +87,7 @@ def valid_user_session(initialize_browser):
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item):
     """
-    Capture screenshot on test failure and embed in HTML report.
+    Capture screenshot on test failure and embed in HTML report fle.
     """
     pytest_html = item.config.pluginmanager.getplugin('html')
     outcome = yield
